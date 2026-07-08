@@ -2,7 +2,7 @@
 #include "config.h"
 #include <DHT.h>
 
-static DHT dht(DHT_PIN, DHT_TYPE);
+static DHT dht(DHT_PIN, DHT11);
 
 void dhtBegin() {
   dht.begin();

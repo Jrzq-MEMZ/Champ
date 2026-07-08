@@ -2,6 +2,7 @@
 #define PINS_H
 
 #include "esp_camera.h"
+#include "config.h"
 
 // ESP32-CAM-MB (AI-Thinker 引脚映射，兼容 OV2640/OV3660)
 static camera_config_t camera_config = {

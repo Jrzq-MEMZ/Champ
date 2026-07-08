@@ -10,6 +10,7 @@
 #include "mqtt_handler.h"
 #include <esp_task_wdt.h>
 #include <time.h>
+#include "esp_idf_version.h"
 
 static unsigned long lastDht = 0;
 static unsigned long lastStatus = 0;
@@ -41,7 +42,16 @@ void setup() {
   delay(500);
   Serial.println("\n==== ESP32-CAM 启动 ====");
 
+#if ESP_IDF_VERSION_MAJOR >= 5
+  esp_task_wdt_config_t wdt_config = {
+    .timeout_ms = WDT_TIMEOUT_S * 1000,
+    .idle_core_mask = BIT(0) | BIT(1),
+    .trigger_panic = true,
+  };
+  esp_task_wdt_init(&wdt_config);
+#else
   esp_task_wdt_init(WDT_TIMEOUT_S, true);
+#endif
   esp_task_wdt_add(NULL);
 
   if (!camBegin()) {
