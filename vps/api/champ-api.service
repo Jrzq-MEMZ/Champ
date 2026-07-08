@@ -1,0 +1,16 @@
+[Unit]
+Description=Champ Node.js API
+After=network.target mosquitto.service
+Requires=mosquitto.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/champ/api
+ExecStart=/usr/bin/node src/index.js
+EnvironmentFile=/opt/champ/api/.env
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -63,7 +63,7 @@ client.on('connect', () => {
   client.subscribe('cam/+/frame',  { qos: 0 });
 });
 
-client.on('message', (topic, payload, packet) {
+client.on('message', (topic, payload, packet) => {
   const parts = topic.split('/');
   if (parts.length !== 3 || parts[0] !== 'cam') return;
   const deviceId = parts[1];
