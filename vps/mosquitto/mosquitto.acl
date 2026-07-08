@@ -1,0 +1,23 @@
+# Mosquitto ACL 细粒度权限
+# 在 mosquitto.conf 中加: acl_file /etc/mosquitto/mosquitto.acl
+
+# ESP32 设备：只能发自己设备的数据，订阅自己的 cmd
+user esp32cam
+topic publish cam/+/frame
+topic publish cam/+/env
+topic publish cam/+/status
+topic subscribe cam/+/cmd
+
+# Flutter App：订阅所有设备的数据和状态，可下发 cmd
+user app
+topic subscribe cam/+/frame
+topic subscribe cam/+/env
+topic subscribe cam/+/status
+topic publish cam/+/cmd
+
+# Node.js 后端：订阅全部用于入库
+user api
+topic read cam/#
+
+# 模式匹配（$SYS 系统主题默认只读）
+pattern read $SYS/#

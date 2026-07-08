@@ -1,0 +1,42 @@
+# 固件密钥与本地配置
+firmware/config.h.bak
+
+# VPS 敏感文件
+vps/api/.env
+vps/api/data/
+vps/api/node_modules/
+vps/api/package-lock.json
+
+# Flutter
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+app/.pub-cache/
+app/.pub/
+app/build/
+app/.idea/
+app/.vscode/
+app/android/.gradle/
+app/android/local.properties
+app/android/app/build/
+app/android/build/
+app/ios/Pods/
+app/ios/.symlinks/
+app/linux/flutter/ephemeral/
+app/macos/Flutter/ephemeral/
+app/windows/flutter/ephemeral/
+
+# 系统
+.DS_Store
+Thumbs.db
+*.log
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDE
+.idea/
+.vscode/
+*.iml

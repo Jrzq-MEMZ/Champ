@@ -1,0 +1,26 @@
+name: champ
+description: ESP32-CAM 视频温湿度检测系统手机客户端
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mqtt_client: ^5.10.0
+  http: ^1.2.0
+  fl_chart: ^0.69.0
+  flutter_local_notifications: ^17.2.0
+  shared_preferences: ^2.3.0
+  timezone: ^0.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
