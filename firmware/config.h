@@ -57,6 +57,9 @@
 #define DHT_PIN 12
 #define DHT_INTERVAL_MS 10000
 
+// ==================== LED 闪光灯 ====================
+#define LED_FLASH_PIN 4
+
 // ==================== 摄像头默认参数（OV3660 软件降温）====================
 #define CAM_XCLK_FREQ 10000000
 #define CAM_FRAMESIZE_DEFAULT FRAMESIZE_VGA

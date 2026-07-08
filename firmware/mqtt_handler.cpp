@@ -46,6 +46,11 @@ static void onCmd(char* topic, byte* payload, unsigned int len) {
       Serial.printf("[MQTT] fps=%d\n", f);
     }
   }
+  if (doc.containsKey("led")) {
+    int v = doc["led"];
+    digitalWrite(LED_FLASH_PIN, v ? HIGH : LOW);
+    Serial.printf("[MQTT] led=%d\n", v);
+  }
 }
 
 static void ensureTopics() {

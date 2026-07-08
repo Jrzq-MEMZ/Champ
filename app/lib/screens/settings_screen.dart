@@ -12,6 +12,8 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final NotificationService _notif = NotificationService();
   bool _notifEnabled = true;
+  bool _flashlightOn = false;
+  final MqttService _mqtt = MqttService();
 
   // 视频参数
   int _framesize = 5; // 5=VGA
@@ -82,6 +84,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 await _notif.setOngoingEnabled(v);
                 setState(() => _notifEnabled = v);
                 if (!v) await _notif.cancel();
+              },
+            ),
+          ]),
+          const SizedBox(height: 16),
+          _buildSection('闪光灯', [
+            SwitchListTile(
+              title: const Text('手电筒'),
+              subtitle: const Text('远程开关 ESP32-CAM 板载闪光灯'),
+              secondary: Icon(
+                _flashlightOn ? Icons.flash_on : Icons.flash_off,
+                color: _flashlightOn ? Colors.amber : Colors.grey,
+              ),
+              value: _flashlightOn,
+              onChanged: (v) {
+                setState(() => _flashlightOn = v);
+                _mqtt.publishCmd(led: v ? 1 : 0);
               },
             ),
           ]),

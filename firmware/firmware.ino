@@ -42,6 +42,9 @@ void setup() {
   delay(500);
   Serial.println("\n==== ESP32-CAM 启动 ====");
 
+  pinMode(LED_FLASH_PIN, OUTPUT);
+  digitalWrite(LED_FLASH_PIN, LOW);
+
 #if ESP_IDF_VERSION_MAJOR >= 5
   esp_task_wdt_config_t wdt_config = {
     .timeout_ms = WDT_TIMEOUT_S * 1000,

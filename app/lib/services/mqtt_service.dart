@@ -125,7 +125,7 @@ class MqttService {
   }
 
   /// 下发参数调整指令
-  void publishCmd({int? framesize, int? fps, int? quality}) {
+  void publishCmd({int? framesize, int? fps, int? quality, int? led}) {
     final builder = MqttClientPayloadBuilder();
     final map = <String, dynamic>{
       'ts': DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -133,6 +133,7 @@ class MqttService {
     if (framesize != null) map['framesize'] = framesize;
     if (fps != null) map['fps'] = fps;
     if (quality != null) map['quality'] = quality;
+    if (led != null) map['led'] = led;
     builder.addString(jsonEncode(map));
     _client.publishMessage(
       'cam/$deviceId/cmd',
