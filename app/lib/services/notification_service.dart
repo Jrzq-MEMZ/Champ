@@ -15,7 +15,7 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
-  StreamSubscription<EnvData>? _sub;
+  StreamSubscription<void>? _sub;
   bool _initialized = false;
 
   Future<void> init() async {

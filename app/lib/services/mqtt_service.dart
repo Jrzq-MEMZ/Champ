@@ -7,6 +7,7 @@ import '../config.dart';
 import '../models/models.dart';
 
 /// MQTT 订阅服务：连接 VPS 的 WSS，订阅 cam/{id}/frame 和 cam/{id}/env
+/// 兼容 mqtt_client 10.x API
 class MqttService {
   late final MqttServerClient _client;
   final String deviceId;
@@ -30,28 +31,30 @@ class MqttService {
 
   MqttService({String? deviceId})
       : deviceId = deviceId ?? AppConfig.defaultDeviceId {
-    final uri = AppConfig.mqttSecure ? 'wss' : 'ws';
+    // 10.x: WebSocket 模式下 host 必须是完整 wss:// URI（含 path）
+    final scheme = AppConfig.mqttSecure ? 'wss' : 'ws';
+    final wsUri = '$scheme://${AppConfig.mqttHost}${AppConfig.mqttPath}';
+
     _client = MqttServerClient.withPort(
-      '$uri://${AppConfig.mqttHost}:${AppConfig.mqttPort}',
+      wsUri,
       'champ-app-${DateTime.now().millisecondsSinceEpoch}',
       AppConfig.mqttPort,
     );
     _client.useWebSocket = true;
-    _client.websocketProtocols = ['mqttv3.1'];
+    // 注意: secure 标志是 TCP TLS 专用，WSS 不要设
     if (AppConfig.mqttPath.isNotEmpty) {
-      _client.websocketUriString = AppConfig.mqttPath;
+      _client.websocketProtocols = ['mqttv3.1'];
     }
-    _client.port = AppConfig.mqttPort;
     _client.logging(on: false);
     _client.keepAlivePeriod = 30;
     _client.connectTimeoutPeriod = 8000;
     _client.autoReconnect = true;
-    _client.retryAutoReconnectDelay = const Duration(seconds: 3);
+    _client.resubscribeOnAutoReconnect = true;
     _client.onConnected = _onConnected;
     _client.onDisconnected = _onDisconnected;
     _client.onSubscribed = _onSubscribed;
     _client.onAutoReconnect = () {
-      _connController.add(MqttConnectionState.reconnecting);
+      _connController.add(MqttConnectionState.connecting);
     };
     _client.onAutoReconnected = _onConnected;
   }
@@ -70,7 +73,7 @@ class MqttService {
       return false;
     } catch (e) {
       print('[MQTT] connect error: $e');
-      _client.doAutoReconnect();
+      // autoReconnect 已开，库会自动重连
       return false;
     }
   }
@@ -89,12 +92,9 @@ class MqttService {
   }
 
   void _subscribeAll() {
-    final subFrames = _client.subscribe('cam/$deviceId/frame', MqttQos.atMostOnce);
-    final subEnv = _client.subscribe('cam/$deviceId/env', MqttQos.atLeastOnce);
-    final subStatus =
-        _client.subscribe('cam/$deviceId/status', MqttQos.atLeastOnce);
-    print('[MQTT] sub frames=${subFrames?.rawRelStateType} '
-        'env=${subEnv?.rawRelStateType} status=${subStatus?.rawRelStateType}');
+    _client.subscribe('cam/$deviceId/frame', MqttQos.atMostOnce);
+    _client.subscribe('cam/$deviceId/env', MqttQos.atLeastOnce);
+    _client.subscribe('cam/$deviceId/status', MqttQos.atLeastOnce);
 
     _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> msgs) {
       for (final m in msgs) {
@@ -142,7 +142,7 @@ class MqttService {
   }
 
   Future<void> disconnect() async {
-    await _client.disconnect();
+    _client.disconnect();
     _connController.add(MqttConnectionState.disconnected);
   }
 

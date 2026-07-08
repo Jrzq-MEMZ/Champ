@@ -40,3 +40,9 @@ Thumbs.db
 .idea/
 .vscode/
 *.iml
+
+app/AndroidManifest.xml.bak
+session-ses_*.md
+app/build/
+app/.dart_tool/
+

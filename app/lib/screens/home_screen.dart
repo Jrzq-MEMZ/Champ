@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:mqtt_client/mqtt_client.dart' show MqttConnectionState;
 import '../config.dart' show AppConfig;
 import '../models/models.dart';
 import '../services/mqtt_service.dart';
@@ -58,10 +59,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             _conn = _ConnLabel.connected;
             break;
           case MqttConnectionState.connecting:
-            _conn = _ConnLabel.connecting;
-            break;
-          case MqttConnectionState.reconnecting:
-            _conn = _ConnLabel.reconnecting;
+            // autoReconnect 也走 connecting 状态，用上一次状态区分显示
+            _conn = _conn == _ConnLabel.connected
+                ? _ConnLabel.reconnecting
+                : _ConnLabel.connecting;
             break;
           default:
             _conn = _ConnLabel.disconnected;
@@ -484,10 +485,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     final tempPad = ((maxTemp - minTemp).clamp(1.0, 10.0)) * 0.2;
     final humPad = ((maxHum - minHum).clamp(1.0, 10.0)) * 0.2;
-    final tempMinY = (minTemp - tempPad).clamp(0, 100);
+    final tempMinY = (minTemp - tempPad).clamp(0.0, 100.0);
     final tempMaxY = maxTemp + tempPad;
-    final humMinY = (minHum - humPad).clamp(0, 100);
-    final humMaxY = (maxHum + humPad).clamp(0, 100);
+    // humMinY/humMaxY 当前图表只画温度曲线，保留以备扩展
+    // final humMinY = (minHum - humPad).clamp(0.0, 100.0);
+    // final humMaxY = (maxHum + humPad).clamp(0.0, 100.0);
 
     return LineChart(
       LineChartData(
