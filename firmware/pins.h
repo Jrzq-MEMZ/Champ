@@ -23,13 +23,15 @@ static camera_config_t camera_config = {
     .pin_href = 23,
     .pin_pclk = 22,
     .xclk_freq_hz = CAM_XCLK_FREQ,
-    .ledc_channel = LEDC_CHANNEL_0,
     .ledc_timer = LEDC_TIMER_0,
+    .ledc_channel = LEDC_CHANNEL_0,
     .pixel_format = PIXFORMAT_JPEG,
     .frame_size = CAM_FRAMESIZE_DEFAULT,
     .jpeg_quality = CAM_QUALITY_DEFAULT,
     .fb_count = CAM_FB_COUNT,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
+
+
 };
 
 #endif
